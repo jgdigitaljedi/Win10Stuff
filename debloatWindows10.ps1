@@ -157,10 +157,13 @@ Write-Output "Uninstalling default Microsoft applications..."
 Get-AppxPackage "Microsoft.3DBuilder" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.AppConnector" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.BingFinance" | Remove-AppxPackage
+Get-AppxPackage "Microsoft.BingFoodAndDrink" | Remove-AppxPackage
+Get-AppxPackage "Microsoft.BingHealthAndFitness" | Remove-AppxPackage
+Get-AppxPackage "Microsoft.BingMaps" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.BingNews" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.BingSports" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.BingTranslator" | Remove-AppxPackage
-Get-AppxPackage "Microsoft.BingWeather" | Remove-AppxPackage
+Get-AppxPackage "Microsoft.BingTravel" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.CommsPhone" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.ConnectivityStore" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.GetHelp" | Remove-AppxPackage
@@ -174,6 +177,9 @@ Get-AppxPackage "Microsoft.OneConnect" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.People" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.Print3D" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.RemoteDesktop" | Remove-AppxPackage
+Get-AppxPackage "Microsoft.SkypeApp" | Remove-AppxPackage
+Get-AppxPackage "Microsoft.Todos" | Remove-AppxPackage
+Get-AppxPackage "Microsoft.Whiteboard" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.WindowsFeedbackHub" | Remove-AppxPackage
 Get-AppxPackage "Microsoft.WindowsMaps" | Remove-AppxPackage
 
@@ -189,22 +195,34 @@ Get-AppxPackage "828B5831.HiddenCityMysteryofShadows" | Remove-AppxPackage
 Get-AppxPackage "89006A2E.AutodeskSketchBook" | Remove-AppxPackage
 Get-AppxPackage "9E2F88E3.Twitter" | Remove-AppxPackage
 Get-AppxPackage "A278AB0D.DisneyMagicKingdoms" | Remove-AppxPackage
+Get-AppxPackage "A278AB0D.DragonManiaLegends" | Remove-AppxPackage
 Get-AppxPackage "A278AB0D.MarchofEmpires" | Remove-AppxPackage
 Get-AppxPackage "ActiproSoftwareLLC.562882FEEB491" | Remove-AppxPackage
+Get-AppxPackage "AD2F1837.GettingStartedwithWindows8" | Remove-AppxPackage
+Get-AppxPackage "AD2F1837.HPJumpStart" | Remove-AppxPackage
+Get-AppxPackage "AD2F1837.HPRegistration" | Remove-AppxPackage
 Get-AppxPackage "AdobeSystemsIncorporated.AdobePhotoshopExpress" | Remove-AppxPackage
+Get-AppxPackage "Amazon.com.Amazon" | Remove-AppxPackage
+Get-AppxPackage "C27EB4BA.DropboxOEM" | Remove-AppxPackage
 Get-AppxPackage "CAF9E577.Plex" | Remove-AppxPackage
+Get-AppxPackage "CyberLinkCorp.hs.PowerMediaPlayer14forHPConsumerPC" | Remove-AppxPackage
 Get-AppxPackage "D52A8D61.FarmVille2CountryEscape" | Remove-AppxPackage
 Get-AppxPackage "D5EA27B7.Duolingo-LearnLanguagesforFree" | Remove-AppxPackage
 Get-AppxPackage "DB6EA5DB.CyberLinkMediaSuiteEssentials" | Remove-AppxPackage
-Get-AppxPackage "DolbyLaboratories.DolbyAccess" | Remove-AppxPackage
 Get-AppxPackage "Drawboard.DrawboardPDF" | Remove-AppxPackage
 Get-AppxPackage "Facebook.Facebook" | Remove-AppxPackage
 Get-AppxPackage "flaregamesGmbH.RoyalRevolt2" | Remove-AppxPackage
 Get-AppxPackage "GAMELOFTSA.Asphalt8Airborne" | Remove-AppxPackage
 Get-AppxPackage "KeeperSecurityInc.Keeper" | Remove-AppxPackage
 Get-AppxPackage "king.com.BubbleWitch3Saga" | Remove-AppxPackage
+Get-AppxPackage "king.com.CandyCrushFriends" | Remove-AppxPackage
+Get-AppxPackage "king.com.CandyCrushSaga" | Remove-AppxPackage
 Get-AppxPackage "king.com.CandyCrushSodaSaga" | Remove-AppxPackage
+Get-AppxPackage "king.com.FarmHeroesSaga" | Remove-AppxPackage
+Get-AppxPackage "Nordcurrent.CookingFever" | Remove-AppxPackage
 Get-AppxPackage "PandoraMediaInc.29680B314EFC2" | Remove-AppxPackage
+Get-AppxPackage "PricelinePartnerNetwork.Booking.comBigsavingsonhot" | Remove-AppxPackage
+Get-AppxPackage "ThumbmunkeysLtd.PhototasticCollage" | Remove-AppxPackage
 Get-AppxPackage "WinZipComputing.WinZipUniversal" | Remove-AppxPackage
 Get-AppxPackage "XINGAG.XING" | Remove-AppxPackage
 
@@ -245,3 +263,23 @@ $Edge = "HKCR:\AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723_"
 If (Test-Path $Edge) {
   Set-Item $Edge AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723_ 
 }
+
+# Disable setting 'Let websites provide locally relevant content by accessing my language list'
+Write-Output "Disabling Website Access to Language List..."
+Set-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -Type DWord -Value 1
+
+# Disable internet connection sharing
+Write-Output "Disabling Internet Connection Sharing..."
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Network Connections" -Name "NC_ShowSharedAccessUI" -Type DWord -Value 0
+
+# Disable autorun for removable drives
+Write-Output "Enabling Autorun for all drives..."
+Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoDriveTypeAutoRun" -ErrorAction SilentlyContinue
+
+# Show full directory path in Explorer bar
+Write-Output "Showing full directory path in Explorer title bar..."
+If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState")) {
+  New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState" -Force | Out-Null
+}
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState" -Name "FullPath" -Type DWord -Value 1
+
